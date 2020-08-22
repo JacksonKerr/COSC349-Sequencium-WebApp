@@ -1,0 +1,6 @@
+CREATE TABLE scores (
+  name varchar(20) NOT NULL,
+  score int,
+  cbscore int,
+  PRIMARY KEY (name)
+);

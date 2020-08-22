@@ -1,1 +1,1 @@
-{"virtualbox":{"/vagrant":{"owner":"vagrant","group":"vagrant","mount_options":["dmode=775,fmode=777","uid=1000","gid=1000"],"guestpath":"/vagrant","hostpath":"/home/cshome/j/jkerr/CourseWork/COSC349/Assignment1/scoreDB","disabled":false,"__vagrantfile":true}}}
+{"virtualbox":{"/vagrant":{"owner":"vagrant","group":"vagrant","mount_options":["dmode=775,fmode=777","uid=1000","gid=1000"],"guestpath":"/vagrant","hostpath":"/home/cshome/m/mewood/COSC349/assgn1/COSC349-Sequencium-WebApp/scoreDB","disabled":false,"__vagrantfile":true}}}
