@@ -1,0 +1,1 @@
+{"virtualbox":{"/vagrant":{"owner":"vagrant","group":"vagrant","mount_options":["dmode=775,fmode=777","uid=1000","gid=1000"],"guestpath":"/vagrant","hostpath":"/home/cshome/j/jkerr/CourseWork/COSC349/Assignment1/seqAgent","disabled":false,"__vagrantfile":true}}}
