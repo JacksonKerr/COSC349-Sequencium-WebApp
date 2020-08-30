@@ -1,8 +1,8 @@
 CREATE TABLE scores (
-       user_name varchar(50) NOT NULL,
+       username varchar(50),
        score int,
-       seq_score int
-PRIMARY KEY (user_name)
+       agent_score int,
+       PRIMARY KEY (username)
 );
 
 INSERT INTO scores VALUES ('Megan', 40, 12);
