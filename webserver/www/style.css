@@ -1,3 +1,12 @@
+body {
+    width: 100%;
+    text-align: center;
+}
+
+#seqGame {
+    margin: 0 auto;
+}
+
 #seqBoard button {
     width: 150px;
     height: 150px;
@@ -18,6 +27,15 @@ input {
     display: inline-block;
 }
 
-#makeMoveButton {
+#gameButtons {
+    display: inline-block;
+    width:100%;
+}
+
+#gameButtons #MakeMoveButton {
     float: right;
+}
+
+#gameButtons>* {
+    float: left;
 }

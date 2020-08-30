@@ -67,7 +67,7 @@ public class Utils {
 
         for (int row : possRows) {
             for (int col : possCols) {
-                if (row == 0 && col == 0) continue;
+                if (row == r && col == c) continue;
                 returnList.add(new int[] {row, col});
             }
         }

@@ -3,56 +3,9 @@ package seqplayer;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CliffBooth {
-    boolean canShadow = true;
-
-    /***
-     * Runs a game of sequencium against a human player (via the terminal)
-     */
-    public static void main(String[] args) {
-        int[][] board = {{-1, 0, 0, 0, 0, 0},
-                        {0, -2, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 1}};
-        
-        CliffBooth player = new CliffBooth();
-        
-        System.out.println(player.getName());
-
-        Scanner sc = new Scanner(System.in);
-        
-
-        while (Utils.hasMove(board)) {
-            System.out.println("*********************************************");
-
-            // Get player's move
-            int[] playerMove = player.makeMove(board);
-
-            // Apply player's move
-            int playerMoveRow = playerMove[0];
-            int playerMoveCol = playerMove[1];
-            int playerMoveVal = playerMove[2];
-            board[playerMoveRow][playerMoveCol] = playerMoveVal;
-
-            // Print out the board
-            System.out.println("===BOARD AFTER CLIFFBOOTH'S MOVE: ===");
-            System.out.println(stringifyBoard(board));
-            
-            // For me to play against our agent
-            int row = sc.nextInt();
-            int col = sc.nextInt();
-            int val = sc.nextInt();
-            board[row][col] = val;
-
-            // Print out the board
-            System.out.println("===BOARD AFTER PLAYERS'S MOVE: ===");
-            System.out.println(stringifyBoard(board));
-        }
-    }
-
     /**
      * -------------------------------------------------------------------------
      *                          Public Methods
@@ -73,12 +26,23 @@ public class CliffBooth {
      * 
      * @return proposed move {i, j, value}
      */
-    public int[] makeMove(int[][] board) {
-        if (canShadow(board)) return shadow(board);
+    public int[] makeMove(int[][] board, boolean shadowingEnabled, String strategy) {
+        if (shadowingEnabled && canShadow(board)) return shadow(board);
 
-        BoardTree boardTree = new BoardTree(board);
-        int[] move = boardTree.getMove();
-        return move;
+        if (strategy.equals("minimax")) {
+            BoardTree boardTree = new BoardTree(board);
+            return boardTree.getMove();
+        }
+
+        else if (strategy.equals("random")) {
+            int[][] possibleMoves = BoardTree.getPossibleMoves(board, true);
+            int randIndex = new Random().nextInt(possibleMoves.length);
+
+            return possibleMoves[randIndex];
+        }
+
+        System.out.println("ERROR: Invalid strategy name: "+strategy);
+        return new int[1];
     }
 
     /**
