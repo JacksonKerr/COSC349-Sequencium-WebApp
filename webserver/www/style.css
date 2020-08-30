@@ -1,21 +1,15 @@
+:root {
+    --settingWidth: 250px;
+    --settingHeight: 20px;
+}
+
 body {
     width: 100%;
     text-align: center;
 }
-
-#seqGame {
-    margin: 0 auto;
+h2 {
+    margin: 5px;
 }
-
-#seqBoard button {
-    width: 150px;
-    height: 150px;
-}
-
-.opponentTile {
-    background-color: darkred;
-}
-
 input {
     width: 30px;
     margin: 0;
@@ -23,19 +17,84 @@ input {
 }
 
 #seqGame {
+    margin: 0 auto;
     overflow: hidden;
     display: inline-block;
+}
+
+#seqBoard button {
+    font-size: 30px;
+}
+
+#gameOptions {
+    min-width: 500px;
+    overflow: hidden;
+    border: solid black 1px;
+}
+
+#gameOptions #r1 {
+    display: inline-block;
+}
+#gameOptions #sizeOptions {
+    width: var(--settingWidth);
+    height: var(--settingHeight);
+    float: left;
+    border: solid black 1px;
+}
+#gameOptions #startPlayerOptions {
+    float: left;
+    width: var(--settingWidth);
+    height: var(--settingHeight);
+    border: solid black 1px;
+}
+
+
+#gameOptions #r2 {
+    clear: both;
+    display: inline-block;
+}
+#gameOptions #mirrorOptions {
+    float: left;
+    width: var(--settingWidth);
+    height: var(--settingHeight);
+
+    border: solid black 1px;
+}
+#gameOptions #stratOptions {
+    float: right;
+    width: var(--settingWidth);
+    height: var(--settingHeight);
+
+    border: solid black 1px;
+}
+
+#gameOptions #createGameButton {
+    display: block;
+    margin: auto;
+    clear: both;
+}
+
+
+#seqBoard button {
+    width: 150px;
+    height: 150px;
 }
 
 #gameButtons {
     display: inline-block;
     width:100%;
 }
-
 #gameButtons #MakeMoveButton {
     float: right;
 }
-
+#gameButtons #passMoveButton {
+    float: right;
+}
 #gameButtons>* {
     float: left;
+}
+
+#moveIndicator {
+    border: solid black 1px;
+    margin: 10px 0 0 0;
 }

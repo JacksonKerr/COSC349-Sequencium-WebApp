@@ -3,8 +3,11 @@ $(document).ready(function() {
     playerColour = "#3CB371" // Medium Sea Green
     selectedTileColour = "#f5ef42" // Lemon Yellow
 
-    selectedSpaceButtonText = "Selected Space"
-    emptySpaceButtonText = "Empty Space"
+    selectedSpaceButtonText = "Selected"
+    emptySpaceButtonText = "Empty"
+
+    playerTurnText = "Human's Turn"
+    opponentTurnText = "Computer is Thinking..."
 
     opponentStrategy = null
     opponentMirror = null
@@ -14,11 +17,10 @@ $(document).ready(function() {
 
     function main() {
         console.log("Sequencium.js Loaded")
-        createGame()
-
 
         $("#createGameButton").click(createGame)
         $("#makeMoveButton").click(makeMove)
+        $("#passMoveButton").click(function() {makeOpponentMove()})
     }
 
     function makeMove() {
@@ -33,6 +35,10 @@ $(document).ready(function() {
     }
 
     function makeOpponentMove() {
+        $("button").prop("disabled", true)
+        $("#moveIndicator").text(opponentTurnText)
+        $("#moveIndicator").css("color", opponentColour)
+
         // Ajax call to get opponents next move from the server
         cliffData = ""
 
@@ -48,17 +54,29 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url:"getMove.php",
+            url: "getMove.php",
             data: {board:cliffData},
             type: "GET",
 
             success:function(cliffMove)
             {
+                console.log(cliffMove)
                 cliffMove = JSON.parse(cliffMove)
                 cliffRow = cliffMove[0]+1
                 cliffCol = cliffMove[1]+1
                 cliffVal = cliffMove[2]
+
+                $("#moveIndicator").text(playerTurnText)
+                $("#moveIndicator").css("color", playerColour)
+
+                if (cliffVal < 1) return
+
                 editTile(cliffRow, cliffCol, cliffVal, false)
+                console.log(JSON.stringify(board, null, 2))
+                $("button").prop("disabled", false)
+            },
+            error:function() {
+                alert("Could not get the computer player's next move from the server")
             }
         })
     }
@@ -69,6 +87,13 @@ $(document).ready(function() {
 
         opponentStrategy = $("#cliffStrategy").val()
         opponentMirror = $("#mirrorMoves").prop("checked")
+
+        startingPlayer = $("#startingPlayer").val()
+
+        $("#moveIndicator").text("Human's Turn")
+        $("#moveIndicator").css("color", playerColour)
+
+        if (startingPlayer === "computer") makeOpponentMove()
 
         // Set up board object with all empty spaces
         board = {}
@@ -96,15 +121,15 @@ $(document).ready(function() {
     }
 
     function selectMove() {
-        // If another move was previously selected, set it back to grey
-        oldSelection = selectedSpace
-
         // Get coords of selected move
         rowId = $(this).parent().attr("id")
         colClass = $(this).attr("class")
         rowNum = parseInt(rowId[rowId.length-1])
         colNum = parseInt(colClass[colClass.length-1])
 
+        // If another move was previously selected, set it back to grey
+        oldSelection = null
+        if (selectedSpace != null) oldSelection = selectedSpace
         selectedSpace = [rowNum, colNum]
 
         largestNeighVal = parseInt(getLargestNeighbourValue(rowNum, colNum))
@@ -113,7 +138,7 @@ $(document).ready(function() {
         if (board[rowNum][colNum] == 0 && largestNeighVal > 0) {
             if (oldSelection != null) {
                 // Remove the colour and text from the old selected space if one exists
-                oldButton = $("#row"+oldSelection[0]+" .col"+oldSelection[1])
+                oldButton = $("#seqBoard #row"+oldSelection[0]+" .col"+oldSelection[1])
                 oldButton.css("background-color", "")
                 oldButton.text(emptySpaceButtonText);
             }
