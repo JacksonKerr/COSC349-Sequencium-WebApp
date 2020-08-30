@@ -41,18 +41,18 @@ Vagrant.configure("2") do |config|
     seqAgent.vm.provision "shell", path: "seqAgent/seqAgent.sh"
   end
 
-  # # Highscore Databse Server
-  # config.vm.define "scoreDB" do |scoreDB|
-  #   scoreDB.vm.hostname = "scoreDB"
+  # Highscore Databse Server
+   config.vm.define "scoreDB" do |scoreDB|
+     scoreDB.vm.hostname = "scoreDB"
 
-  #   # Giving VM an address on the private network
-  #   scoreDB.vm.network "private_network", ip: "192.168.5.4"
+     # Giving VM an address on the private network
+     scoreDB.vm.network "private_network", ip: "192.168.5.4"
 
-  #   # Mount shared folder.
-  #   scoreDB.vm.synced_folder "./scoreDB", "/vagrant", owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=777"]
+     # Mount shared folder.
+     scoreDB.vm.synced_folder "./scoreDB", "/vagrant", owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=777"]
     
-  #   scoreDB.vm.provision "shell", path: "scoreDB/scoreDB.sh"
-  # end
+     scoreDB.vm.provision "shell", path: "scoreDB/scoreDB.sh"
+   end
 
 end
 
