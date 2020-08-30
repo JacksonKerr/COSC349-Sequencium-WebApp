@@ -6,3 +6,18 @@
 .opponentTile {
     background-color: darkred;
 }
+
+input {
+    width: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+#seqGame {
+    overflow: hidden;
+    display: inline-block;
+}
+
+#makeMoveButton {
+    float: right;
+}

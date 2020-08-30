@@ -10,19 +10,19 @@
 <body>
 <h1>Sequencium: Man vs Machine</h1>
 
-<div>
+<div id="seqGame">
   <label for="numRows">Rows:</label>
-  <input type="number" id="numRows" name="numRows">
+  <input type="number" id="numRows" value="3" name="numRows">
   <label for="numCols">Cols:</label>
-  <input type="number" id="numCols" name="numCols">
+  <input type="number" id="numCols" value="3" name="numCols">
   <button id="createGameButton">Create Game</button>
+
+  <button id="makeMoveButton">Make Move</button>
+
+  <div id="seqBoard">
+  </div>
+
 </div>
-
-
-
-<div id="seqBoard">
-</div>
-
 
 
 
