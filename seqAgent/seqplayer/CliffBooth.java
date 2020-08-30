@@ -36,6 +36,10 @@ public class CliffBooth {
 
         else if (strategy.equals("random")) {
             int[][] possibleMoves = BoardTree.getPossibleMoves(board, true);
+
+            // Return invalid move if there is no possible move
+            if (possibleMoves.length < 1) return new int[] {-1, -1, -1};
+
             int randIndex = new Random().nextInt(possibleMoves.length);
 
             return possibleMoves[randIndex];

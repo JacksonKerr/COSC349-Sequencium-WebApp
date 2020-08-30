@@ -24,7 +24,7 @@ public class BoardTree {
     private static boolean PRINT_PROGRESS = false;
 
     private static final int MAX_NUM_NODES = 250000;
-    private static final int WIN_REWARD = 1000;
+    private static final int WIN_REWARD = 100000;
     private static final int INACCESSABLE_SPACE_DISTANCE = 50;
     private static int numNodes = 0;
 
