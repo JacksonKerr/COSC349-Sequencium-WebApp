@@ -6,12 +6,16 @@ $(document).ready(function() {
     selectedSpaceButtonText = "Selected Space"
     emptySpaceButtonText = "Empty Space"
 
+    opponentStrategy = null
+    opponentMirror = null
+
     board = {}
     selectedSpace = null
 
     function main() {
         console.log("Sequencium.js Loaded")
         createGame()
+
 
         $("#createGameButton").click(createGame)
         $("#makeMoveButton").click(makeMove)
@@ -35,23 +39,26 @@ $(document).ready(function() {
         // First line holds number of numRows"space"numCols
         numRows = Object.values(board).length
         numCols = Object.values(board[1]).length
-        cliffData += numRows+" "+numCols+" "
+        cliffData += numRows+" "+numCols+" "+opponentMirror+" "+opponentStrategy+" "
 
         for (row of Object.values(board)) {
             for (val of Object.values(row)) {
                 cliffData += val+" "
             }
         }
-        console.log("Final cliffData:\n"+cliffData)
 
         $.ajax({
             url:"getMove.php",
             data: {board:cliffData},
             type: "GET",
 
-            success:function(blah)
+            success:function(cliffMove)
             {
-                console.log(blah)
+                cliffMove = JSON.parse(cliffMove)
+                cliffRow = cliffMove[0]+1
+                cliffCol = cliffMove[1]+1
+                cliffVal = cliffMove[2]
+                editTile(cliffRow, cliffCol, cliffVal, false)
             }
         })
     }
@@ -59,6 +66,9 @@ $(document).ready(function() {
     function createGame() {
         numRows = parseInt($("#numRows").val())
         numCols = parseInt($("#numCols").val())
+
+        opponentStrategy = $("#cliffStrategy").val()
+        opponentMirror = $("#mirrorMoves").prop("checked")
 
         // Set up board object with all empty spaces
         board = {}
@@ -78,6 +88,7 @@ $(document).ready(function() {
             }
         }
 
+        // Place starting moves
         editTile(1, 1, 1, true)
         editTile(numRows, numCols, 1, false)
 
@@ -96,11 +107,12 @@ $(document).ready(function() {
 
         selectedSpace = [rowNum, colNum]
 
-        // Check if space on board is available
-        if (board[rowNum][colNum] == 0) {
+        largestNeighVal = parseInt(getLargestNeighbourValue(rowNum, colNum))
+
+        // Check if space on board is available TODO and that the space is a valid move
+        if (board[rowNum][colNum] == 0 && largestNeighVal > 0) {
             if (oldSelection != null) {
                 // Remove the colour and text from the old selected space if one exists
-                console.log("changing button")
                 oldButton = $("#row"+oldSelection[0]+" .col"+oldSelection[1])
                 oldButton.css("background-color", "")
                 oldButton.text(emptySpaceButtonText);
@@ -108,7 +120,8 @@ $(document).ready(function() {
 
             // Set the colour of the new selected space, and change the text to 'selected'
             $(this).css("background-color", selectedTileColour)
-            $(this).html("Move Value:<input id='moveValInput' type='number' id='numCols' value='3' name='numCols'>")
+            $(this).html(selectedSpaceButtonText)
+            $("#moveValInput").val(largestNeighVal+1)
         } else {
             selectedSpace = oldSelection
         }
@@ -127,6 +140,53 @@ $(document).ready(function() {
         value = isPlayer ? value : -1*value
         board[row][col] = value
     }
-
     main()
+
+    function getLargestNeighbourValue(row, col) {
+        neighbours = getNeighbours(row, col)
+        largestNeighVal = -999999999999999
+
+        for (neigh of neighbours) {
+            neighRow = neigh[0]
+            neighCol = neigh[1]
+
+            neighVal = board[neighRow][neighCol]
+
+            if (neighVal > largestNeighVal) {
+                largestNeighVal = neighVal
+            }
+        }
+        return largestNeighVal
+    }
+
+    function getNeighbours(row, col) {
+            numRows = Object.values(board).length
+            numCols = Object.values(board[1]).length
+
+            possRows = []
+            possCols = []
+            returnList = []
+            
+            // If Row or value is invalid
+            if (row < 1 || row > numRows || col < 1 || col > numCols) {
+                return returnList;
+            }
+
+            possRows.push(row)
+            possCols.push(col)
+    
+            if (row > 1) possRows.push(row-1)
+            if (col > 1) possCols.push(col-1)
+    
+            if (row < numRows) possRows.push(row+1)
+            if (col < numCols) { possCols.push(col+1);}
+    
+            for (cRow of possRows) {
+                for (cCol of possCols) {
+                    if (cRow == row && cCol == col) continue
+                    returnList.push([cRow, cCol])
+                }
+            }
+            return returnList;
+    }
 });

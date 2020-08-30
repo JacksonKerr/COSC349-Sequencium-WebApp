@@ -346,7 +346,7 @@ public class BoardTree {
      * @param isPlayer is our player, otherwise evaluates other players moves
      * @return Array of int[] which represent a possible move eg. {row, column, maxValue}
      */
-    private static int[][] getPossibleMoves(final int[][] givenBoard, final boolean isPlayersMove) {
+    public static int[][] getPossibleMoves(final int[][] givenBoard, final boolean isPlayersMove) {
         final int numRows = givenBoard.length;
         final int numCols = givenBoard[0].length;
 

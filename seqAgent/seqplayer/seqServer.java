@@ -21,8 +21,10 @@ public class seqServer {
             try(ServerSocket serverSocket = new ServerSocket(8081)) {
                 // Wait for a connection to the socket
                 Socket connectionSocket = serverSocket.accept();
+                
+                System.out.println("=============================");
                 System.out.println("Accepted Connection");
-
+                
                 // Get the streams for the socket
                 InputStream inputStream = connectionSocket.getInputStream();
                 OutputStream outputStream = connectionSocket.getOutputStream();
@@ -31,11 +33,18 @@ public class seqServer {
                 PrintWriter output = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"));
                 
                 // Read the input
-                Scanner inputScan = new Scanner(inputStream); // Scan all input into a single string
+                Scanner inputScan = new Scanner(inputStream);
 
                 int numRows = inputScan.nextInt();
                 int numCols = inputScan.nextInt();
-                
+
+                // True if clif should use the mirroring strategy when possibe
+                boolean cliffMirrors = inputScan.nextBoolean();
+
+                // Either 'random' or 'minimax'
+                String cliffStrat = inputScan.next();
+
+
                 int[][] board = new int[numRows][numCols];
                 for (int i = 0; i < numRows; i++) {
                     for (int j = 0; j < numCols; j++) {
@@ -48,7 +57,7 @@ public class seqServer {
                 board = BoardTree.flipBoard(board);
 
                 CliffBooth seqPlayer = new CliffBooth();
-                int[] move = seqPlayer.makeMove(board);
+                int[] move = seqPlayer.makeMove(board, cliffMirrors, cliffStrat);
 
                 System.out.println("Returned Move: "+Arrays.toString(move));
 
