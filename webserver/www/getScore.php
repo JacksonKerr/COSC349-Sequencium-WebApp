@@ -24,8 +24,7 @@ $i = 1;
         </tr>
 <?php
 
-while ($row = $q->fetch()){
-        //Needs to print out as html TABLE. 
+while ($row = $q->fetch()){ 
         echo "<tr><td>".$i++."</td><td>".$row["username"]."</td><td>".$row["score"]."</td></tr>\n";
 }
 
