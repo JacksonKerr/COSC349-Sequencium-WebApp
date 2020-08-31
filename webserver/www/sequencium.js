@@ -221,10 +221,7 @@ $(document).ready(function() {
         $.ajax({
             url: "updateScore.php",
             data: {score:gameScore, name:playerName},
-            type: "GET",
-            success:function(response) {
-                getScoreList();
-            },
+            type: "GET"
         })
 
         // Clear submit score area and reload page
