@@ -144,7 +144,7 @@ $(document).ready(function() {
 
         largestNeighVal = parseInt(getLargestNeighbourValue(rowNum, colNum))
 
-        // Check if space on board is available TODO and that the space is a valid move
+        // Check if space on board is available and that the space is a valid move
         if (board[rowNum][colNum] != 0 || largestNeighVal < 1) return
 
 
@@ -295,8 +295,8 @@ $(document).ready(function() {
      * Returns a list of 2d lists representing the coordinates 
      * of a spaces neighbours.
      * 
-     * @param {*} row 
-     * @param {*} col 
+     * @param {int} row 
+     * @param {int} col 
      */
     function getNeighbours(row, col) {
             numRows = Object.values(board).length
