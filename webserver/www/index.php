@@ -15,9 +15,9 @@
       <div id="r1">
         <div id="sizeOptions">
           <label for="numRows">Rows:</label>
-          <input type="number" id="numRows" value="6" name="numRows">
+          <input type="number" id="numRows" value="3" name="numRows">
           <label for="numCols">Cols:</label>
-          <input type="number" id="numCols" value="6" name="numCols">
+          <input type="number" id="numCols" value="3" name="numCols">
         </div>
         
         <div id="mirrorOptions">
@@ -32,8 +32,8 @@
         <div id="startPlayerOptions">
           <label for="startingPlayer">Starting Player:</label>
           <select id="startingPlayer">
-            <option value="human">Human</option>
             <option value="computer">Computer</option>
+            <option value="human">Human</option>
           </select> 
         </div>
 
@@ -56,13 +56,11 @@
     </div>
 
     <div id="gameButtons">
-      <label for="makeMoveButton">Move Size:</label>
-      <input id='moveValInput' type='number' id='numCols' value='0' name='numCols' readonly>
-      <button id="makeMoveButton">Make Move</button>
       <button id="passMoveButton">Pass Turn</button>
     </div>
   </div>
 
+  <div id="nameInput"></div>
   <div id="highScores"></div>
 
 

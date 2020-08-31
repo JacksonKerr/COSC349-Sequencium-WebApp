@@ -24,7 +24,12 @@ public class CliffBooth {
      * 
      * At the start of the game, there are oppening moves setup by the player...
      * 
-     * @return proposed move {i, j, value}
+     * @param board int[][] representng the current board-state
+     * @param shadowingEnabled If true, the agent will mirror the opponent's move 
+     *                         if possible in order to force a draw.
+     * @param strategy Either 'minimax' or 'random'
+     * 
+     * @return proposed move {row, col, value} <- 0-indexed
      */
     public int[] makeMove(int[][] board, boolean shadowingEnabled, String strategy) {
         if (shadowingEnabled && canShadow(board)) return shadow(board);
@@ -183,6 +188,12 @@ public class CliffBooth {
      *                          Debugging Methods
      * -------------------------------------------------------------------------
      */
+
+     /**
+      * @param board A boardstate
+      
+      * @return A string representation of a given boardstate.
+      */
     private static String stringifyBoard(int[][] board) { 
         StringBuilder s = new StringBuilder();
         for (int[] row : board) {

@@ -71,8 +71,6 @@ public class BoardTree {
                 deepestNodes.add(child);
             }
         }
-
-
         deepestNodes.clear();
 
         this.evaluateChildren();

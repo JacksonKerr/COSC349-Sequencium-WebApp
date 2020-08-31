@@ -7,4 +7,4 @@ sudo apt install openjdk-8-jdk -y
 
 # Compile and run server
 javac /vagrant/seqplayer/*.java
-java -cp /vagrant seqplayer.seqServer &
+#java -cp /vagrant seqplayer.seqServer &

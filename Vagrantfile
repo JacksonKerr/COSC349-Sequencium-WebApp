@@ -42,19 +42,6 @@ Vagrant.configure("2") do |config|
   end
 
   # Highscore Databse Server
-<<<<<<< HEAD
-  config.vm.define "scoreDB" do |scoreDB|
-    scoreDB.vm.hostname = "scoreDB"
-
-    # Giving VM an address on the private network
-    scoreDB.vm.network "private_network", ip: "192.168.5.4"
-
-    # Mount shared folder.
-    scoreDB.vm.synced_folder "./scoreDB", "/vagrant", owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=777"]
-    
-    scoreDB.vm.provision "shell", path: "scoreDB/scoreDB.sh"
-  end
-=======
    config.vm.define "scoreDB" do |scoreDB|
      scoreDB.vm.hostname = "scoreDB"
 
@@ -66,7 +53,6 @@ Vagrant.configure("2") do |config|
     
      scoreDB.vm.provision "shell", path: "scoreDB/scoreDB.sh"
    end
->>>>>>> 057549e45f53f1245fcded4c40dd49c55ae4a366
 
 end
 

@@ -1,9 +1,13 @@
+/**
+ * sequencium.js
+ * 
+ * - Jackson Kerr
+ */
 $(document).ready(function() {
     opponentColour = "#FF6347" // Tomato
     playerColour = "#3CB371" // Medium Sea Green
-    selectedTileColour = "#f5ef42" // Lemon Yellow
+    drawColour = "#DE8921" // Orange
 
-    selectedSpaceButtonText = "Selected"
     emptySpaceButtonText = "Empty"
 
     playerTurnText = "Human's Turn"
@@ -12,76 +16,80 @@ $(document).ready(function() {
     opponentStrategy = null
     opponentMirror = null
 
+    gameScore = null
+
     board = {}
-    selectedSpace = null
 
+    /**
+     * Run on page load
+     */
     function main() {
-        console.log("Sequencium.js Loaded")
-
         $("#createGameButton").click(createGame)
-        $("#makeMoveButton").click(makeMove)
-        $("#passMoveButton").click(function() {makeOpponentMove()})
     }
 
-    function makeMove() {
-        // Get value of move and update Board
-        moveVal = $("#moveValInput").val()
-        editTile(selectedSpace[0], selectedSpace[1], moveVal, true)
-        
-        // The space is filled, and therefore no longer selected
-        selectedSpace = null
-
-        makeOpponentMove()
-    }
-
+    /**
+     * Gets a move from the server and uses it to update the game board
+     */
     function makeOpponentMove() {
+        // Disable buttons while the move is retrieved and applied
         $("button").prop("disabled", true)
         $("#moveIndicator").text(opponentTurnText)
         $("#moveIndicator").css("color", opponentColour)
-
+        
         // Ajax call to get opponents next move from the server
         cliffData = ""
-
-        // First line holds number of numRows"space"numCols
+        
         numRows = Object.values(board).length
         numCols = Object.values(board[1]).length
-        cliffData += numRows+" "+numCols+" "+opponentMirror+" "+opponentStrategy+" "
 
+        // First line holds info about the current game
+        cliffData += numRows+" "+numCols+" "+opponentMirror+" "+opponentStrategy+" "
+        
+        // Create a string representation of the board
         for (row of Object.values(board)) {
             for (val of Object.values(row)) {
                 cliffData += val+" "
             }
         }
-
+        
+        // Get's a move from the server
         $.ajax({
             url: "getMove.php",
             data: {board:cliffData},
             type: "GET",
-
-            success:function(cliffMove)
-            {
-                console.log(cliffMove)
+            
+            success:function(cliffMove) {
                 cliffMove = JSON.parse(cliffMove)
+                // Note: Server uses 0-indexed board
                 cliffRow = cliffMove[0]+1
                 cliffCol = cliffMove[1]+1
                 cliffVal = cliffMove[2]
+                
+                // Server returns a negative movement value 
+                // in the case where it has no move
+                if (cliffVal >= 1) {
+                    editTile(cliffRow, cliffCol, cliffVal, false)
+                }
 
-                $("#moveIndicator").text(playerTurnText)
-                $("#moveIndicator").css("color", playerColour)
-
-                if (cliffVal < 1) return
-
-                editTile(cliffRow, cliffCol, cliffVal, false)
-                console.log(JSON.stringify(board, null, 2))
-                $("button").prop("disabled", false)
+                if (checkGameComplete()) {
+                    return
+                } else {
+                    // Enable game interaction controls
+                    $("#moveIndicator").text(playerTurnText)
+                    $("#moveIndicator").css("color", playerColour)
+                    
+                    $("button").prop("disabled", false)
+                }
             },
-            error:function() {
-                alert("Could not get the computer player's next move from the server")
-            }
         })
     }
 
+    /**
+     * Gets the game settings from the input fields and creates a board of given size
+     */
     function createGame() {
+        $("#passMoveButton").click(makeOpponentMove)
+
         numRows = parseInt($("#numRows").val())
         numCols = parseInt($("#numCols").val())
 
@@ -93,8 +101,7 @@ $(document).ready(function() {
         $("#moveIndicator").text("Human's Turn")
         $("#moveIndicator").css("color", playerColour)
 
-        if (startingPlayer === "computer") makeOpponentMove()
-
+        
         // Set up board object with all empty spaces
         board = {}
         for (row = 1; row < numRows+1; row++) {
@@ -117,9 +124,16 @@ $(document).ready(function() {
         editTile(1, 1, 1, true)
         editTile(numRows, numCols, 1, false)
 
+        if (startingPlayer === "computer") makeOpponentMove()
+
         $("#seqBoard button").click(selectMove)
     }
 
+    /**
+     * Called when the user clicks on a space on the board. 
+     * Checks the move is valid then makes the move and asks 
+     * the server for the opponents next move.
+     */
     function selectMove() {
         // Get coords of selected move
         rowId = $(this).parent().attr("id")
@@ -127,34 +141,122 @@ $(document).ready(function() {
         rowNum = parseInt(rowId[rowId.length-1])
         colNum = parseInt(colClass[colClass.length-1])
 
-        // If another move was previously selected, set it back to grey
-        oldSelection = null
-        if (selectedSpace != null) oldSelection = selectedSpace
-        selectedSpace = [rowNum, colNum]
-
         largestNeighVal = parseInt(getLargestNeighbourValue(rowNum, colNum))
 
         // Check if space on board is available TODO and that the space is a valid move
-        if (board[rowNum][colNum] == 0 && largestNeighVal > 0) {
-            if (oldSelection != null) {
-                // Remove the colour and text from the old selected space if one exists
-                oldButton = $("#seqBoard #row"+oldSelection[0]+" .col"+oldSelection[1])
-                oldButton.css("background-color", "")
-                oldButton.text(emptySpaceButtonText);
-            }
+        if (board[rowNum][colNum] != 0 || largestNeighVal < 1) return
 
-            // Set the colour of the new selected space, and change the text to 'selected'
-            $(this).css("background-color", selectedTileColour)
-            $(this).html(selectedSpaceButtonText)
-            $("#moveValInput").val(largestNeighVal+1)
-        } else {
-            selectedSpace = oldSelection
-        }
+
+        // Get value of move and update Board
+        moveVal = largestNeighVal+1
+        editTile(rowNum, colNum, moveVal, true)
+
+        makeOpponentMove()
     }
+
+    /**
+     * Checks if all spaces on the board is taken and if so displays a field 
+     * for the user to enter their name so that their score can be saved 
+     * on the server.
+     * 
+     * @return true if the board is full, else false
+     */
+    function checkGameComplete() {
+        // Exit if game is complete (All spaces are taken)
+        boardArr = Object.values(board)
+        opponentScore = 0
+        playerScore = 0
+        for (row of Object.values(boardArr)) {
+            for (val of Object.values(row)) {
+                // If game is incomplete
+
+                if (val == 0) {
+                    console.log("incomplete")
+                    return false
+                }
+                if (val < opponentScore) opponentScore = val
+                if (val > playerScore) playerScore = val
+            }
+        }
+
+        // GAME IS COMPLETE IF WE GET HERE:
+        console.log("game completed")
+
+        gameScore = playerScore + opponentScore
+
+        // If it's a draw
+        if (gameScore == 0) {
+            $("#moveIndicator").text("Draw! Score: "+gameScore)
+            $("#moveIndicator").css("color", drawColour)
+        }
+        // If human wins
+        if (gameScore > 0) {
+            $("#moveIndicator").text("You Win! Score: "+gameScore)
+            $("#moveIndicator").css("color", playerColour)
+        }   
+        // If computer player wins
+        if (gameScore < 0) {
+            $("#moveIndicator").text("CPU Wins! Human Score: "+gameScore)
+            $("#moveIndicator").css("color", opponentColour)
+        }
+
+        // Show name entry field
+        $("#nameInput").empty()
+        $("#nameInput").append(  "<label for='playerName'>Your Name Here: </label>"
+                                +"<input id='playerName' type='text'></br>"
+                                +"<button id='submitScoreButton'>Submit Score</button>")
+        $("#submitScoreButton").click(submitScore)
+
+        return true
+    }
+
+    /**
+     * TODO write doc comment
+     */
+    function submitScore() {
+        // Get name
+        playerName = $("#playerName").val()
+
+        // Ajax submit score
+        $.ajax({
+            url: "updateScore.php",
+            data: {score:gameScore, name:playerName},
+            type: "GET",
+            success:function(response) {
+                getScoreList();
+            },
+        })
+
+        // Clear submit score area and reload page
+        $("#nameInput").empty()
+    }
+
+    function getScoreList() {
+        $("#highScores").empty()
+
+        $.ajax({
+            url: "updateScore.php",
+            data: {score:gameScore, name:playerName},
+            type: "GET",
+            success:function(response) {
+                $("#highScores").append(response)
+            },
+        })
+    }
+
 
     // --------------------------------------------------------------------- //
     //                           Helper Functions                            //
     // --------------------------------------------------------------------- //
+
+    /**
+     * Inserts a move onto a given space on the board.
+     * 
+     * @param {int} row The row of the move's location.
+     * @param {int} col The column of the move's location.
+     * @param {int} value The value of the move.
+     * @param {boolean} isPlayer If true, places a human move, else a CPU move.
+     */
     function editTile(row, col, value, isPlayer) {
         // Update displayed board
         tile = $(("#row"+row)).find((".col"+col))
@@ -165,8 +267,13 @@ $(document).ready(function() {
         value = isPlayer ? value : -1*value
         board[row][col] = value
     }
-    main()
 
+    /**
+     * Returns the value of the largest neighbouring square.
+     * 
+     * @param {int} row 
+     * @param {int} col
+     */
     function getLargestNeighbourValue(row, col) {
         neighbours = getNeighbours(row, col)
         largestNeighVal = -999999999999999
@@ -184,6 +291,13 @@ $(document).ready(function() {
         return largestNeighVal
     }
 
+    /**
+     * Returns a list of 2d lists representing the coordinates 
+     * of a spaces neighbours.
+     * 
+     * @param {*} row 
+     * @param {*} col 
+     */
     function getNeighbours(row, col) {
             numRows = Object.values(board).length
             numCols = Object.values(board[1]).length
@@ -214,4 +328,7 @@ $(document).ready(function() {
             }
             return returnList;
     }
+
+
+    main()
 });

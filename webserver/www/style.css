@@ -2,7 +2,6 @@
     --settingWidth: 250px;
     --settingHeight: 20px;
 }
-
 body {
     width: 100%;
     text-align: center;
@@ -22,10 +21,7 @@ input {
     display: inline-block;
 }
 
-#seqBoard button {
-    font-size: 30px;
-}
-
+/* Game options style */
 #gameOptions {
     min-width: 500px;
     overflow: hidden;
@@ -47,7 +43,6 @@ input {
     height: var(--settingHeight);
     border: solid black 1px;
 }
-
 
 #gameOptions #r2 {
     clear: both;
@@ -74,27 +69,26 @@ input {
     clear: both;
 }
 
+/* Style for turn indicator */
+#moveIndicator {
+    border: solid black 1px;
+    margin: 10px 0 0 0;
+}
 
+/* Game board tiles */
 #seqBoard button {
     width: 150px;
     height: 150px;
+    font-size: 30px;
 }
 
+/* Container for pass-move button */
 #gameButtons {
     display: inline-block;
     width:100%;
 }
-#gameButtons #MakeMoveButton {
-    float: right;
-}
 #gameButtons #passMoveButton {
-    float: right;
-}
-#gameButtons>* {
-    float: left;
-}
-
-#moveIndicator {
-    border: solid black 1px;
-    margin: 10px 0 0 0;
+    margin: auto;
+    font-size: 20px;
+    
 }
