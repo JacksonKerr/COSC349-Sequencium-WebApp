@@ -212,7 +212,7 @@ $(document).ready(function() {
     }
 
     /**
-     * TODO write doc comment
+     * Submits the score and name from the post-game input field
      */
     function submitScore() {
         // Get name
@@ -222,14 +222,17 @@ $(document).ready(function() {
         $.ajax({
             url: "updateScore.php",
             data: {score:gameScore, name:playerName},
-            type: "GET"
+            type: "GET",
+            success:function() {getScoreList()}
         })
-
-        // Clear submit score area and reload page
+        // Clear submit score
         $("#nameInput").empty()
-        getScoreList()
+        $("button").prop("disabled", false)
     }
 
+    /**
+     * Gets a list of highscores from the database server and displays them
+     */
     function getScoreList() {
         $("#highScores").empty()
         $.ajax({
