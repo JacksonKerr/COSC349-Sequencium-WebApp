@@ -227,6 +227,7 @@ $(document).ready(function() {
 
         // Clear submit score area and reload page
         $("#nameInput").empty()
+        getScoreList()
     }
 
     function getScoreList() {

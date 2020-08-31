@@ -92,3 +92,11 @@ input {
     font-size: 20px;
     
 }
+
+#playerName {
+    width: 100px;
+}
+
+#highScores table {
+    margin: auto;
+}

@@ -15,9 +15,9 @@
       <div id="r1">
         <div id="sizeOptions">
           <label for="numRows">Rows:</label>
-          <input type="number" id="numRows" value="3" name="numRows">
+          <input type="number" id="numRows" value="4" name="numRows">
           <label for="numCols">Cols:</label>
-          <input type="number" id="numCols" value="3" name="numCols">
+          <input type="number" id="numCols" value="4" name="numCols">
         </div>
         
         <div id="mirrorOptions">
