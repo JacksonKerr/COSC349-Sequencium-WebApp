@@ -25,6 +25,7 @@ $(document).ready(function() {
      */
     function main() {
         $("#createGameButton").click(createGame)
+        getScoreList();
     }
 
     /**
@@ -230,10 +231,8 @@ $(document).ready(function() {
 
     function getScoreList() {
         $("#highScores").empty()
-
         $.ajax({
-            url: "updateScore.php",
-            data: {score:gameScore, name:playerName},
+            url: "getScore.php",
             type: "GET",
             success:function(response) {
                 $("#highScores").append(response)
