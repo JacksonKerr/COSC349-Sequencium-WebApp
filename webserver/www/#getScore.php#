@@ -15,19 +15,10 @@ $q = $pdo->query("SELECT * FROM scores ORDER BY score DESC");
 
 //echo database statements in a tble, showing data descending
 $i = 1;
-?>
-
-<table> 
-                <tr> 
-                <th>Player Name:</th>
-                <th>Score:</th>
-        </tr>
-<?php
 
 while ($row = $q->fetch()){
-        //Needs to print out as html TABLE. 
-        echo "<tr><td>".$row["username"]."</td><td> ".$row["score"]."</td></tr>\n";
+      //Needs to print out as html TABLE. 
+     echo$row["username"]." ".$row["score"]." ";
 }
 
 ?>
-</table>
